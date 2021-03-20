@@ -40,7 +40,7 @@ func (r *Repo) FindDiskFiles(diskSpaceId uint) ([]*model.File, error) {
 	catalogs := []*model.File{}
 	if err := r.DB.
 		Where(model.File{DiskSpaceId: diskSpaceId}).
-		Find(catalogs).Error; err != nil {
+		Find(&catalogs).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 	return catalogs, nil
