@@ -4,6 +4,7 @@ import (
 	"github.com/gophers0/storage/internal/config"
 	"github.com/gophers0/storage/internal/middlewares"
 	"github.com/gophers0/storage/internal/repository/postgres"
+	"github.com/gophers0/storage/internal/service/httpsrv/handlers"
 	"github.com/gophers0/storage/pkg/bindings"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -49,13 +50,19 @@ func (s *Service) Start(a *gaarx.App) error {
 		mw.Error(middlewares.ErrorHandler()),
 		mw.Recover(),
 	}
-	//adminMw := append(commonMw, mw.AdminOnly())
+	authMw := append(commonMw, mw.Auth())
+	//adminMw := append(authMw, mw.AdminOnly())
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	}, commonMw...)
 
-	//h := handlers.New(a)
+	h := handlers.New(a)
+	profile := e.Group("/profile", authMw...)
+	{
+		profile.GET("/", h.GetProfile)
+		profile.OPTIONS("/", echo.MethodNotAllowedHandler)
+	}
 
 	return e.Start(":" + s.app.Config().(*config.Config).Api.Port)
 }
