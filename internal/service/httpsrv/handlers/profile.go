@@ -33,7 +33,7 @@ func (h *Handlers) GetProfile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	var rightsIds []uint
+	rightsIds := make([]uint, 0, len(accessRights))
 	for _, right := range accessRights {
 		if right.AccessRightTypeId == model.AccessRightIdRead {
 			rightsIds = append(rightsIds, right.FileId)
