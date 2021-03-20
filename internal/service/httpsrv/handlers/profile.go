@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/gophers0/storage/internal/model"
 	"net/http"
 
 	"github.com/gophers0/storage/internal/transport"
@@ -22,8 +23,31 @@ func (h *Handlers) GetProfile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
+	trashFiles, err := h.getDB().FindDeletedDiskFiles(dSpace.ID)
+	if err != nil {
+		return errs.NewStack(err)
+	}
+
+	accessRights, err := h.getDB().FindUserAccessRights(uint(user.Id))
+	if err != nil {
+		return errs.NewStack(err)
+	}
+
+	rightsIds := []uint{}
+	for _, right := range accessRights {
+		if right.AccessRightTypeId == model.AccessRightIdRead {
+			rightsIds = append(rightsIds, right.FileId)
+		}
+	}
+	sharedFiles, err := h.getDB().FindFiles(rightsIds)
+	if err != nil {
+		return errs.NewStack(err)
+	}
+
 	return c.JSON(http.StatusOK, transport.ProfileResponse{
-		DiskSpace: dSpace,
-		Files:     files,
+		DiskSpace:   dSpace,
+		Files:       files,
+		TrashFiles:  trashFiles,
+		SharedFiles: sharedFiles,
 	})
 }

@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"errors"
 	"github.com/gophers0/storage/internal/model"
 	"github.com/gophers0/storage/pkg/errs"
 	"path/filepath"
@@ -46,6 +45,21 @@ func (r *Repo) FindDiskFiles(diskSpaceId uint) ([]*model.File, error) {
 	return catalogs, nil
 }
 
+func (r *Repo) FindDeletedDiskFiles(diskSpaceId uint) ([]*model.File, error) {
+	mux.RLock()
+	defer mux.RUnlock()
+
+	catalogs := []*model.File{}
+	if err := r.DB.
+		Unscoped().
+		Where(model.File{DiskSpaceId: diskSpaceId}).
+		Where("deleted_at IS NOT NULL").
+		Find(&catalogs).Error; err != nil {
+		return nil, errs.NewStack(err)
+	}
+	return catalogs, nil
+}
+
 func (r *Repo) CreateFile(name string, size, diskSpaceId uint) (*model.File, error) {
 	var err error
 
@@ -58,9 +72,6 @@ func (r *Repo) CreateFile(name string, size, diskSpaceId uint) (*model.File, err
 		Where("id = ?", diskSpaceId).
 		First(diskSpace).Error; err != nil {
 		return nil, errs.NewStack(err)
-	}
-	if err != nil {
-		return nil, errs.NewStack(errors.New("Disk space does not exists!"))
 	}
 
 	file := &model.File{

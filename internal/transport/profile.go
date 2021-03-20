@@ -6,8 +6,10 @@ type (
 	ProfileRequest struct {
 	}
 	ProfileResponse struct {
-		DiskSpace *model.DiskSpace `json:"disk_space"`
-		Files     []*model.File    `json:"files"`
+		DiskSpace   *model.DiskSpace `json:"disk_space"`
+		Files       []*model.File    `json:"files"`
+		TrashFiles  []*model.File    `json:"trash_files"`
+		SharedFiles []*model.File    `json:"shared_files"`
 	}
 )
 
