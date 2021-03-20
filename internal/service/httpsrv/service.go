@@ -1,10 +1,11 @@
 package httpsrv
 
 import (
-	"github.com/gophers0/users/internal/config"
-	"github.com/gophers0/users/internal/middlewares"
-	"github.com/gophers0/users/internal/repository/postgres"
-	"github.com/gophers0/users/pkg/bindings"
+	"github.com/gophers0/storage/internal/config"
+	"github.com/gophers0/storage/internal/middlewares"
+	"github.com/gophers0/storage/internal/repository/postgres"
+	"github.com/gophers0/storage/internal/service/httpsrv/handlers"
+	"github.com/gophers0/storage/pkg/bindings"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/sirupsen/logrus"
@@ -35,7 +36,6 @@ func (s *Service) getLog() *logrus.Entry {
 
 func (s *Service) Start(a *gaarx.App) error {
 	s.app = a
-
 	e := echo.New()
 	e.Validator = &bindings.Validator{}
 
@@ -50,9 +50,43 @@ func (s *Service) Start(a *gaarx.App) error {
 		mw.Error(middlewares.ErrorHandler()),
 		mw.Recover(),
 	}
+	authMw := append(commonMw, mw.Auth())
+	adminMw := append(authMw, mw.AdminOnly())
+
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	}, commonMw...)
+
+	h := handlers.New(a)
+	profile := e.Group("/profile", authMw...)
+	{
+		profile.GET("/", h.GetProfile)
+		profile.OPTIONS("/", echo.MethodNotAllowedHandler)
+	}
+
+	upload := e.Group("/upload", authMw...)
+	{
+		upload.POST("/file", h.UploadFile)
+		upload.OPTIONS("/file", echo.MethodNotAllowedHandler)
+	}
+
+	share := e.Group("/share", authMw...)
+	{
+		share.POST("/file", h.ShareReadRight)
+		share.OPTIONS("/file", echo.MethodNotAllowedHandler)
+	}
+
+	cms := e.Group("/cms", adminMw...)
+	{
+		cms.POST("/user", h.ViewFilesByAdmin)
+		cms.OPTIONS("/user", echo.MethodNotAllowedHandler)
+	}
+
+	file := e.Group("/file", authMw...)
+	{
+		file.GET("/:id", h.GetFile)
+		file.OPTIONS("/:id", echo.MethodNotAllowedHandler)
+	}
 
 	return e.Start(":" + s.app.Config().(*config.Config).Api.Port)
 }

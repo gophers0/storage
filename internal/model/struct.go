@@ -10,5 +10,7 @@ type Model struct {
 }
 
 var ModelsList = []interface{}{
-
+	DiskSpace{},
+	File{},
+	UserAccessRight{},
 }

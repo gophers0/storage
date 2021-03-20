@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gophers0/storage/internal/transport"
+	"github.com/gophers0/storage/pkg/errs"
+	"github.com/gophers0/storage/pkg/logger"
 	"github.com/labstack/echo"
-
-	"github.com/mc2soft/marketplace-backend/server/pkg/errs"
-	"github.com/mc2soft/marketplace-backend/server/pkg/logger"
-	"github.com/mc2soft/marketplace-backend/server/transport"
 )
 
 // Error is a middleware that calls ErrorHandler if HandlerFunc returned error.

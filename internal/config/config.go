@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/gophers0/users/internal/repository/postgres"
+	"github.com/gophers0/storage/internal/repository/postgres"
 	gaarx "github.com/zergu1ar/Gaarx"
 )
 
@@ -23,6 +23,8 @@ type Config struct {
 	Api struct {
 		Port string `json:"port"`
 	} `json:"api"`
+	Users   string `json:"users"`
+	Storage string `json:"storage"`
 }
 type DB struct {
 	Dialect  string `json:"postgres"`
