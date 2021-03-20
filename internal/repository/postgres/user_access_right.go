@@ -18,20 +18,20 @@ func (r *Repo) FindUserAccessRight(id uint) (*model.UserAccessRight, error) {
 	return userAccessRight, nil
 }
 
-func (r *Repo) FindUserAccessRights(user_id uint) ([]*model.UserAccessRight, error) {
+func (r *Repo) FindUserAccessRights(userId uint) ([]*model.UserAccessRight, error) {
 	mux.RLock()
 	defer mux.RUnlock()
 
 	userAccessRights := []*model.UserAccessRight{}
 	if err := r.DB.
-		Where(model.UserAccessRight{UserId: user_id}).
+		Where(model.UserAccessRight{UserId: userId}).
 		First(userAccessRights).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 	return userAccessRights, nil
 }
 
-func (r *Repo) CreateUserAccessRight(user_id, file_id, access_right_id uint) (*model.UserAccessRight, error) {
+func (r *Repo) CreateUserAccessRight(userId, fileId, accessRightId uint) (*model.UserAccessRight, error) {
 	var err error
 
 	mux.Lock()
@@ -39,15 +39,15 @@ func (r *Repo) CreateUserAccessRight(user_id, file_id, access_right_id uint) (*m
 
 	file := &model.File{}
 	if err = r.DB.
-		Where("id = ?", file_id).
+		Where("id = ?", fileId).
 		First(file).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 
 	userAccessRight := &model.UserAccessRight{
-		UserId:            user_id,
-		FileId:            file_id,
-		AccessRightTypeId: access_right_id,
+		UserId:            userId,
+		FileId:            fileId,
+		AccessRightTypeId: accessRightId,
 	}
 
 	if err := r.DB.
@@ -58,7 +58,7 @@ func (r *Repo) CreateUserAccessRight(user_id, file_id, access_right_id uint) (*m
 	return userAccessRight, nil
 }
 
-func (r *Repo) DeleteUserAccessRight(user_id, file_id, access_right_id uint) (*model.UserAccessRight, error) {
+func (r *Repo) DeleteUserAccessRight(userId, fileId, accessRightId uint) (*model.UserAccessRight, error) {
 
 	mux.Lock()
 	defer mux.Unlock()
@@ -67,9 +67,9 @@ func (r *Repo) DeleteUserAccessRight(user_id, file_id, access_right_id uint) (*m
 
 	if err := r.DB.
 		Where(&model.UserAccessRight{
-			UserId:            user_id,
-			FileId:            file_id,
-			AccessRightTypeId: access_right_id,
+			UserId:            userId,
+			FileId:            fileId,
+			AccessRightTypeId: accessRightId,
 		}).
 		Delete(userAccessRight).Error; err != nil {
 		return nil, errs.NewStack(err)

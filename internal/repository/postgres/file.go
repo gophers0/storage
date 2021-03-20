@@ -20,20 +20,20 @@ func (r *Repo) FindFiles(ids []uint) ([]*model.File, error) {
 	return files, nil
 }
 
-func (r *Repo) FindDiskFiles(disk_space_id uint) ([]*model.File, error) {
+func (r *Repo) FindDiskFiles(diskSpaceId uint) ([]*model.File, error) {
 	mux.RLock()
 	defer mux.RUnlock()
 
 	catalogs := []*model.File{}
 	if err := r.DB.
-		Where(model.File{DiskSpaceId: disk_space_id}).
+		Where(model.File{DiskSpaceId: diskSpaceId}).
 		Find(catalogs).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 	return catalogs, nil
 }
 
-func (r *Repo) CreateFile(name string, size, disk_space_id uint) (*model.File, error) {
+func (r *Repo) CreateFile(name string, size, diskSpaceId uint) (*model.File, error) {
 	var err error
 
 	mux.Lock()
@@ -42,7 +42,7 @@ func (r *Repo) CreateFile(name string, size, disk_space_id uint) (*model.File, e
 	// check dick  !!!!!!!!!!!!!!!!!! МОЖЕТ БЫТЬ, ЧТО БЛАГОДАРЯ КЛЮЧУ МОЖНО СТЕРЕТЬ ПРОВЕРКУ
 	diskSpace := &model.DiskSpace{}
 	if err = r.DB.
-		Where("id = ?", disk_space_id).
+		Where("id = ?", diskSpaceId).
 		First(diskSpace).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
@@ -53,7 +53,7 @@ func (r *Repo) CreateFile(name string, size, disk_space_id uint) (*model.File, e
 	file := &model.File{
 		Name:        name,
 		Size:        size,
-		DiskSpaceId: disk_space_id,
+		DiskSpaceId: diskSpaceId,
 	}
 	file.FileMime = filepath.Ext(name)
 
