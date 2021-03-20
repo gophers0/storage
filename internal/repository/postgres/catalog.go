@@ -25,7 +25,7 @@ func (r *Repo) FindDiskCatalogs(disk_space_id uint) ([]*model.Catalog, error) {
 
 	catalogs := []*model.Catalog{}
 	if err := r.DB.
-		Where(model.Catalog{DiskSpaceId:disk_space_id}).
+		Where(model.Catalog{DiskSpaceId: disk_space_id}).
 		Find(catalogs).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
@@ -37,9 +37,9 @@ func (r *Repo) CreateCatalog(disk_space_id, parent_catalog_id uint, name string)
 	defer mux.Unlock()
 
 	catalog := &model.Catalog{
-		DiskSpaceId: disk_space_id,
+		DiskSpaceId:     disk_space_id,
 		ParentCatalogId: parent_catalog_id,
-		Name: name,
+		Name:            name,
 	}
 
 	if err := r.DB.
@@ -70,14 +70,16 @@ func (r *Repo) UpdateDiskCatalog(id uint, name string) (*model.Catalog, error) {
 
 func (r *Repo) DeleteDiskCatalogs(disk_space_id uint) ([]*model.Catalog, error) {
 	catalogs, err := r.FindDiskCatalogs(disk_space_id)
-	if err !
+	if err != nil {
+		return nil, errs.NewStack(err)
+	}
 
 	mux.Lock()
 	defer mux.Unlock()
 
-	catalogs := []*model.Catalog{}
+	catalogs = []*model.Catalog{}
 	if err := r.DB.
-		Where(model.Catalog{DiskSpaceId:disk_space_id}).
+		Where(model.Catalog{DiskSpaceId: disk_space_id}).
 		Find(catalogs).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}

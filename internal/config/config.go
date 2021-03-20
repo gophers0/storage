@@ -23,6 +23,11 @@ type Config struct {
 	Api struct {
 		Port string `json:"port"`
 	} `json:"api"`
+	External struct {
+		UsersApi struct {
+			Host string `json:"host"`
+		} `json:"users_api"`
+	} `json:"external"`
 }
 type DB struct {
 	Dialect  string `json:"postgres"`

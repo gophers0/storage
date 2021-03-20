@@ -6,7 +6,9 @@ import (
 )
 
 const (
-	CtxUserKey = "user"
+	CtxUserKey          = "user"
+	CtxSessionKey       = "session"
+	AuthorizationHeader = "Authorization"
 )
 
 // BindAndValidate can creates every Request at handlers
