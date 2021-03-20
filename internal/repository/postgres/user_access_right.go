@@ -25,7 +25,7 @@ func (r *Repo) FindUserAccessRights(userId uint) ([]*model.UserAccessRight, erro
 	userAccessRights := []*model.UserAccessRight{}
 	if err := r.DB.
 		Where(model.UserAccessRight{UserId: userId}).
-		First(userAccessRights).Error; err != nil {
+		Find(userAccessRights).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 	return userAccessRights, nil

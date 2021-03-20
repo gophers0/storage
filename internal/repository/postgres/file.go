@@ -7,6 +7,19 @@ import (
 	"path/filepath"
 )
 
+func (r *Repo) FindFile(id uint) ([]*model.File, error) {
+	mux.RLock()
+	defer mux.RUnlock()
+
+	files := []*model.File{}
+	if err := r.DB.
+		Where("id = ?", id).
+		First(files).Error; err != nil {
+		return nil, errs.NewStack(err)
+	}
+	return files, nil
+}
+
 func (r *Repo) FindFiles(ids []uint) ([]*model.File, error) {
 	mux.RLock()
 	defer mux.RUnlock()
@@ -14,7 +27,7 @@ func (r *Repo) FindFiles(ids []uint) ([]*model.File, error) {
 	files := []*model.File{}
 	if err := r.DB.
 		Where("id in (?)", ids).
-		First(files).Error; err != nil {
+		Find(files).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 	return files, nil
@@ -39,7 +52,7 @@ func (r *Repo) CreateFile(name string, size, diskSpaceId uint) (*model.File, err
 	mux.Lock()
 	defer mux.Unlock()
 
-	// check dick  !!!!!!!!!!!!!!!!!! МОЖЕТ БЫТЬ, ЧТО БЛАГОДАРЯ КЛЮЧУ МОЖНО СТЕРЕТЬ ПРОВЕРКУ
+	// check dick
 	diskSpace := &model.DiskSpace{}
 	if err = r.DB.
 		Where("id = ?", diskSpaceId).
