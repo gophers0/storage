@@ -1,7 +1,7 @@
 package model
 
 const (
-	DiskSpaceDefaultSpace int = 1e+8
+	DiskSpaceDefaultSpace uint = 1e+8
 )
 
 type DiskSpace struct {
@@ -9,8 +9,8 @@ type DiskSpace struct {
 
 	UserOwnerId uint
 
-	OverallSpace  int // in bytes
-	FreeSpace     int // in bytes
-	OccupiedSpace int // in bytes
-	ReservedSpace int // in bytes
+	OverallSpace  uint // in bytes
+	FreeSpace     uint // in bytes
+	OccupiedSpace uint // in bytes
+	ReservedSpace uint // in bytes
 }
