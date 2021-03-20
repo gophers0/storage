@@ -81,4 +81,5 @@ var (
 	InvalidAuthorizationHeader = newCodeError(200005, "Некорректный заголовок авторизации", "InvalidAuthorizationHeader", http.StatusUnauthorized)
 
 	NotAvailableFreeSpace = newCodeError(300001, "Недостаточно места на диске", "NotAvailableFreeSpace", http.StatusBadRequest)
+	FileNotFound          = newCodeError(300002, "Файл не найден", "FileNotFound", http.StatusNotFound)
 )

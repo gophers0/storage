@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"errors"
+	"net/http"
+
 	"github.com/gophers0/storage/internal/config"
 	"github.com/gophers0/storage/internal/model"
 	"github.com/gophers0/storage/internal/transport"
 	"github.com/gophers0/storage/pkg/errs"
 	"github.com/gophers0/storage/pkg/users"
 	"github.com/labstack/echo"
-	"net/http"
 )
 
 func (h *Handlers) ShareReadRight(c echo.Context) error {
@@ -25,7 +26,7 @@ func (h *Handlers) ShareReadRight(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	file, err := h.getDB().FindFile(uint(req.FileId))
+	file, err := h.getDB().FindFileById(uint(req.FileId))
 	if err != nil {
 		return errs.NewStack(err)
 	}
@@ -36,7 +37,7 @@ func (h *Handlers) ShareReadRight(c echo.Context) error {
 	}
 
 	if dSpace.ID != file.DiskSpaceId {
-		return errs.NewStack(errors.New("The user is not the owner of the file"))
+		return errs.NewStack(errors.New("user is not owner of this file"))
 	}
 
 	_, err = h.getDB().CreateUserAccessRight(

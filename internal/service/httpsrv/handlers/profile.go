@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"github.com/gophers0/storage/internal/model"
 	"net/http"
 
+	"github.com/gophers0/storage/internal/model"
 	"github.com/gophers0/storage/internal/transport"
 	"github.com/gophers0/storage/pkg/errs"
 	"github.com/gophers0/storage/pkg/users"
@@ -33,7 +33,7 @@ func (h *Handlers) GetProfile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	rightsIds := []uint{}
+	var rightsIds []uint
 	for _, right := range accessRights {
 		if right.AccessRightTypeId == model.AccessRightIdRead {
 			rightsIds = append(rightsIds, right.FileId)

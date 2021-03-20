@@ -11,6 +11,8 @@ func (r *Repo) FindFileById(id uint) (*model.File, error) {
 
 	file := &model.File{}
 	if err := r.DB.
+		Model(&model.File{}).
+		Preload("DiskSpace").
 		Where("id = ?", id).
 		First(file).Error; err != nil {
 		return nil, errs.NewStack(err)
@@ -22,7 +24,7 @@ func (r *Repo) FindFiles(ids []uint) ([]*model.File, error) {
 	mux.RLock()
 	defer mux.RUnlock()
 
-	files := []*model.File{}
+	var files []*model.File
 	if err := r.DB.
 		Where("id in (?)", ids).
 		Find(files).Error; err != nil {
@@ -45,7 +47,7 @@ func (r *Repo) FindDiskFiles(diskSpaceId uint) ([]*model.File, error) {
 	mux.RLock()
 	defer mux.RUnlock()
 
-	catalogs := []*model.File{}
+	var catalogs []*model.File
 	if err := r.DB.
 		Where(model.File{DiskSpaceId: diskSpaceId}).
 		Find(&catalogs).Error; err != nil {
@@ -58,18 +60,17 @@ func (r *Repo) FindDeletedDiskFiles(diskSpaceId uint) ([]*model.File, error) {
 	mux.RLock()
 	defer mux.RUnlock()
 
-	catalogs := []*model.File{}
+	var files []*model.File
 	if err := r.DB.
 		Unscoped().
-		Where(model.File{DiskSpaceId: diskSpaceId}).
-		Where("deleted_at IS NOT NULL").
-		Find(&catalogs).Error; err != nil {
+		Where("deleted_at IS NOT NULL and disk_space_id = ?", diskSpaceId).
+		Find(&files).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
-	return catalogs, nil
+	return files, nil
 }
 
-func (r *Repo) CreateFile(name, mime string, size, diskSpaceId uint) (*model.File, error) {
+func (r *Repo) CreateFile(name, mime string, size int64, diskSpaceId uint) (*model.File, error) {
 	mux.Lock()
 	defer mux.Unlock()
 
@@ -84,6 +85,11 @@ func (r *Repo) CreateFile(name, mime string, size, diskSpaceId uint) (*model.Fil
 		return nil, errs.NewStack(err)
 	}
 	return file, nil
+}
+
+func (r *Repo) UpdateFile(file *model.File) (*model.File, error) {
+	err := r.DB.Save(file).Error
+	return file, errs.NewStack(err)
 }
 
 func (r *Repo) DeleteFile(id uint) (*model.File, error) {

@@ -2,6 +2,7 @@ package transport
 
 import (
 	"errors"
+
 	"github.com/gophers0/storage/pkg/errs"
 )
 
@@ -11,16 +12,17 @@ type (
 		FileId   int    `json:"file_id"`
 	}
 	ShareReadRightResponse struct {
+		BaseResponse
 	}
 )
 
 func (req *ShareReadRightRequest) Validate() error {
 	var err error
-	if len(req.UserName) < 3 {
-		err = errs.NewStack(errors.New("The username is incorrect."))
+	if req.UserName == "" {
+		err = errs.NewStack(errors.New("username is empty"))
 	}
-	if req.FileId < 0 {
-		err = errs.NewStack(errors.New("The file id is incorrect."))
+	if req.FileId <= 0 {
+		err = errs.NewStack(errors.New("invalid file id"))
 	}
 	return err
 }

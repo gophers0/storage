@@ -22,10 +22,10 @@ func (r *Repo) FindUserAccessRights(userId uint) ([]*model.UserAccessRight, erro
 	mux.RLock()
 	defer mux.RUnlock()
 
-	userAccessRights := []*model.UserAccessRight{}
+	var userAccessRights []*model.UserAccessRight
 	if err := r.DB.
 		Where(model.UserAccessRight{UserId: userId}).
-		Find(userAccessRights).Error; err != nil {
+		Find(&userAccessRights).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 	return userAccessRights, nil
@@ -50,8 +50,7 @@ func (r *Repo) CreateUserAccessRight(userId, fileId, accessRightId uint) (*model
 		AccessRightTypeId: accessRightId,
 	}
 
-	if err := r.DB.
-		FirstOrCreate(userAccessRight).Error; err != nil {
+	if err := r.DB.FirstOrCreate(userAccessRight).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 

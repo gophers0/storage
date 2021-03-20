@@ -24,8 +24,8 @@ func (req *UploadFileReq) Validate() error {
 
 type UploadFileResponse struct {
 	BaseResponse
-	FreeSpaceAvailable uint   `json:"free_space"`
-	OccupiedSpace      uint   `json:"occupied_space"`
+	FreeSpaceAvailable int64  `json:"free_space"`
+	OccupiedSpace      int64  `json:"occupied_space"`
 	FileName           string `json:"file_name"`
 	FileMime           string `json:"file_mime"`
 	FileID             uint   `json:"file_id"`

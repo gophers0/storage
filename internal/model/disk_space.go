@@ -1,7 +1,7 @@
 package model
 
 const (
-	DiskSpaceDefaultSpace uint = 1e+8
+	DiskSpaceDefaultSpace int64 = 1e+8
 )
 
 type DiskSpace struct {
@@ -9,7 +9,7 @@ type DiskSpace struct {
 
 	UserOwnerId uint `gorm:"index"`
 
-	OverallSpace  uint // in bytes
-	FreeSpace     uint // in bytes
-	OccupiedSpace uint // in bytes
+	OverallSpace  int64 // in bytes
+	FreeSpace     int64 // in bytes
+	OccupiedSpace int64 // in bytes
 }

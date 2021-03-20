@@ -51,7 +51,7 @@ func (s *Service) Start(a *gaarx.App) error {
 		mw.Recover(),
 	}
 	authMw := append(commonMw, mw.Auth())
-	//adminMw := append(authMw, mw.AdminOnly())
+	adminMw := append(authMw, mw.AdminOnly())
 
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
@@ -68,6 +68,24 @@ func (s *Service) Start(a *gaarx.App) error {
 	{
 		upload.POST("/file", h.UploadFile)
 		upload.OPTIONS("/file", echo.MethodNotAllowedHandler)
+	}
+
+	share := e.Group("/share", authMw...)
+	{
+		share.POST("/file", h.ShareReadRight)
+		share.OPTIONS("/file", echo.MethodNotAllowedHandler)
+	}
+
+	cms := e.Group("/cms", adminMw...)
+	{
+		cms.POST("/user", h.ViewFilesByAdmin)
+		cms.OPTIONS("/user", echo.MethodNotAllowedHandler)
+	}
+
+	file := e.Group("/file", authMw...)
+	{
+		file.GET("/:id", h.GetFile)
+		file.OPTIONS("/:id", echo.MethodNotAllowedHandler)
 	}
 
 	return e.Start(":" + s.app.Config().(*config.Config).Api.Port)

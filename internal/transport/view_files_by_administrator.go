@@ -17,9 +17,8 @@ type (
 )
 
 func (req *ViewFilesByAdminRequest) Validate() error {
-	var err error
-	if len(req.UserName) < 3 {
-		err = errs.NewStack(errors.New("The username is incorrect."))
+	if req.UserName == "" {
+		return errs.NewStack(errors.New("username is empty"))
 	}
-	return err
+	return nil
 }

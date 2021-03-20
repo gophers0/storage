@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"errors"
 	"github.com/gophers0/storage/internal/config"
 	"github.com/gophers0/storage/internal/transport"
 	"github.com/gophers0/storage/pkg/errs"
@@ -14,11 +13,6 @@ func (h *Handlers) ViewFilesByAdmin(c echo.Context) error {
 	req := transport.ViewFilesByAdminRequest{}
 	if err := transport.BindAndValidate(c, req); err != nil {
 		return errs.NewStack(err)
-	}
-
-	admin := c.Get(transport.CtxUserKey).(*users.User)
-	if admin.Role != "admin" {
-		return errs.NewStack(errors.New("User is not an admin"))
 	}
 
 	usersAPI := users.NewApi(h.app.Config().(*config.Config).Users)

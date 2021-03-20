@@ -71,7 +71,7 @@ func (r *Repo) DeleteDiskSpace(id uint) (*model.DiskSpace, []*model.File, error)
 	return diskSpace, files, err
 }
 
-func (r *Repo) FillDiskSpace(userId, volume uint) (*model.DiskSpace, error) {
+func (r *Repo) FillDiskSpace(userId uint, volume int64) (*model.DiskSpace, error) {
 	mux.Lock()
 	defer mux.Unlock()
 	diskSpace := &model.DiskSpace{}

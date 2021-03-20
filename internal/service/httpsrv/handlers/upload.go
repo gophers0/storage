@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"bufio"
 	"compress/gzip"
 	"errors"
 	"fmt"
+	"github.com/gophers0/storage/internal/model"
 	"github.com/jinzhu/gorm"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -35,12 +37,16 @@ func (h *Handlers) UploadFile(c echo.Context) error {
 	}
 	defer src.Close()
 
-	storagePath := h.app.Config().(*config.Config).Storage
-
-	if err := os.MkdirAll(fmt.Sprintf("%s/%d", storagePath, user.Id), os.ModePerm); err != nil {
+	read := bufio.NewReader(src)
+	fileContent, err := ioutil.ReadAll(read)
+	if err != nil {
 		return errs.NewStack(err)
 	}
 
+	storagePath := h.app.Config().(*config.Config).Storage
+	if err := os.MkdirAll(fmt.Sprintf("%s/%d", storagePath, user.Id), os.ModePerm); err != nil {
+		return errs.NewStack(err)
+	}
 	dstFileName := fmt.Sprintf("%s/%d/%s.gzip", storagePath, user.Id, file.Filename)
 	dst, err := os.Create(dstFileName)
 	if err != nil {
@@ -49,18 +55,10 @@ func (h *Handlers) UploadFile(c echo.Context) error {
 	defer dst.Close()
 
 	w := gzip.NewWriter(dst)
-	fileContent := []byte("")
-	if _, err := src.Read(fileContent); err != nil {
-		return errs.NewStack(err)
-	}
-
 	if _, err := w.Write(fileContent); err != nil {
 		return errs.NewStack(err)
 	}
-
-	if _, err := io.Copy(dst, src); err != nil {
-		return errs.NewStack(err)
-	}
+	w.Close()
 
 	// get real size write db, etc...
 	info, err := dst.Stat()
@@ -73,7 +71,7 @@ func (h *Handlers) UploadFile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	if dSpace.FreeSpace < uint(info.Size()) {
+	if dSpace.FreeSpace < info.Size() {
 		// remove file, return error
 		if err := os.Remove(dstFileName); err != nil {
 			return errs.NewStack(err)
@@ -87,20 +85,30 @@ func (h *Handlers) UploadFile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	deltaSpace := uint(info.Size())
-	if existsFile.ID > 0 {
+	deltaSpace := info.Size()
+	if existsFile != nil && existsFile.ID > 0 {
 		// change diskSpace
-		deltaSpace = uint(info.Size()) - existsFile.Size
+		deltaSpace = info.Size() - int64(existsFile.Size)
 	}
 
 	dSpace, err = h.getDB().FillDiskSpace(uint(user.Id), deltaSpace)
 	if err != nil {
 		return errs.NewStack(err)
 	}
-
-	fileEntity, err := h.getDB().CreateFile(info.Name(), req.Mime, uint(info.Size()), dSpace.ID)
-	if err != nil {
-		return errs.NewStack(err)
+	var fileEntity *model.File
+	if existsFile != nil && existsFile.ID > 0 {
+		//update file
+		existsFile.Size = info.Size()
+		existsFile.Mime = req.Mime
+		fileEntity, err = h.getDB().UpdateFile(existsFile)
+		if err != nil {
+			return errs.NewStack(err)
+		}
+	} else {
+		fileEntity, err = h.getDB().CreateFile(info.Name(), req.Mime, info.Size(), dSpace.ID)
+		if err != nil {
+			return errs.NewStack(err)
+		}
 	}
 
 	return c.JSON(http.StatusOK, transport.UploadFileResponse{

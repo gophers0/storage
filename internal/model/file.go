@@ -2,7 +2,7 @@ package model
 
 type File struct {
 	Model
-	Size uint
+	Size int64
 	Name string
 	Mime string // file type
 
