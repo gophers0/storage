@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"errors"
 	"github.com/gophers0/storage/internal/model"
 	"github.com/gophers0/storage/pkg/errs"
 )
@@ -39,7 +38,7 @@ func (r *Repo) CreateUserAccessRight(user_id, file_id, access_right_id uint) (*m
 	defer mux.Unlock()
 
 	file := &model.File{}
-	if err := r.DB.
+	if err = r.DB.
 		Where("id = ?", file_id).
 		First(file).Error; err != nil {
 		return nil, errs.NewStack(err)
