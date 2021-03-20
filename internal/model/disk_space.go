@@ -1,12 +1,16 @@
 package model
 
+const (
+	DiskSpaceDefaultSpace int = 1e+8
+)
+
 type DiskSpace struct {
 	Model
 
-	UserOwnerId int
+	UserOwnerId uint
 
-	OverallVolume  uint // in bytes
-	FreeVolume     uint // in bytes
-	OccupiedVolume uint // in bytes
-	ReservedVolume uint // in bytes
+	OverallSpace  int // in bytes
+	FreeSpace     int // in bytes
+	OccupiedSpace int // in bytes
+	ReservedSpace int // in bytes
 }

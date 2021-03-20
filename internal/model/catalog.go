@@ -3,8 +3,8 @@ package model
 type Catalog struct {
 	Model
 
-	DiskSpaceId int
+	DiskSpaceId uint
 
 	IsMainCatalog   bool // is it main catalog in disk space?
-	ParentCatalogId int  // zero for main catalog
+	ParentCatalogId uint // zero for main catalog
 }

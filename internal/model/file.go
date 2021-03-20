@@ -2,11 +2,10 @@ package model
 
 type File struct {
 	Model
-
+	Size     uint
 	Name     string
-	Size     int
 	FileMime string // file type
 
-	DiskSpaceId int
-	CatalogId   int // file catalog id
+	DiskSpaceId uint
+	CatalogId   uint // file catalog id
 }

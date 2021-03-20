@@ -1,20 +1,20 @@
 package model
 
 const (
-	AccessRightIdOwner int = 1
+	AccessRightIdOwner uint = 1
 
-	AccessRightIdRead   int = 11 // see in catalog, open in app
-	AccessRightIdLoad   int = 12
-	AccessRightIdDelete int = 21
+	AccessRightIdRead   uint = 11 // see in catalog, open in app
+	AccessRightIdLoad   uint = 12
+	AccessRightIdDelete uint = 21
 
-	AccessRightIdGiveRead        int = 31
-	AccessRightIdGiveDelete      int = 32
-	AccessRightIdUploadToCatalog int = 1
+	AccessRightIdGiveRead        uint = 31
+	AccessRightIdGiveDelete      uint = 32
+	AccessRightIdUploadToCatalog uint = 1
 )
 
 type UserAccessRight struct {
 	Model
 
-	UserId            int
-	AccessRightTypeId int // AccessRight constant
+	UserId            uint
+	AccessRightTypeId uint // AccessRight constant
 }
