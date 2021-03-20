@@ -25,7 +25,7 @@ func New(cfg interface{}, logger *logrus.Logger, repo *postgres.Repo) *Middlewar
 		repo:    repo,
 		cfg:     appCfg,
 		logger:  logger,
-		UserApi: users.NewApi(appCfg.External.UsersApi.Host),
+		UserApi: users.NewApi(appCfg.Users),
 	}
 }
 

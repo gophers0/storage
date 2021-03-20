@@ -10,7 +10,7 @@ import (
 )
 
 func (h *Handlers) GetProfile(c echo.Context) error {
-	user := c.Get(transport.CtxUserKey).(*users.User)
+	user := c.Get(transport.CtxUserKey).(users.User)
 
 	dSpace, err := h.getDB().FindOrCreateUserDiskSpace(uint(user.Id))
 	if err != nil {

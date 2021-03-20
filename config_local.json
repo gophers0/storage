@@ -1,5 +1,5 @@
 {
-  "name": "user-service",
+  "name": "storage-service",
   "system": {
     "db": {
       "dialect": "postgres",
@@ -17,9 +17,5 @@
   "api": {
     "port": 3000
   },
-  "external": {
-    "users_api": {
-      "host": "localhost:8080/"
-    }
-  }
+  "users": "http://localhost:8080/"
 }
