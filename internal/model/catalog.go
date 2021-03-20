@@ -5,8 +5,7 @@ type Catalog struct {
 
 	DiskSpaceId uint
 
-	IsMainCatalog   bool // is it main catalog in disk space?
-	ParentCatalogId uint // zero for main catalog
-
-	DiskSpace DiskSpace `gorm:"foreignKey:DiskSpaceId"`
+	ParentCatalogId uint // zero for root directories
+	Name            string
+	DiskSpace       DiskSpace `gorm:"foreignKey:DiskSpaceId"`
 }
