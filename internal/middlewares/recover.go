@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	"github.com/gophers0/users/pkg/errs"
+	"github.com/gophers0/storage/pkg/errs"
 	"github.com/labstack/echo"
 )
 

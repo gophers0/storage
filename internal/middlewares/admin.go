@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"github.com/gophers0/users/internal/model"
-	"github.com/gophers0/users/internal/transport"
-	"github.com/gophers0/users/pkg/errs"
+	"github.com/gophers0/storage/internal/model"
+	"github.com/gophers0/storage/internal/transport"
+	"github.com/gophers0/storage/pkg/errs"
 	"github.com/labstack/echo"
 )
 

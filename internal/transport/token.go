@@ -1,6 +1,6 @@
 package transport
 
-import "github.com/gophers0/users/internal/model"
+import "github.com/gophers0/storage/internal/model"
 
 type CheckTokenRequest struct {
 	Token  string `json:"token"`

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gophers0/users/internal/transport"
-	"github.com/gophers0/users/pkg/errs"
-	"github.com/gophers0/users/pkg/logger"
+	"github.com/gophers0/storage/internal/transport"
+	"github.com/gophers0/storage/pkg/errs"
+	"github.com/gophers0/storage/pkg/logger"
 	"github.com/labstack/echo"
 )
 

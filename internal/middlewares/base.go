@@ -4,9 +4,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/gophers0/users/internal/config"
-	"github.com/gophers0/users/internal/repository/postgres"
-	"github.com/gophers0/users/pkg/logger"
+	"github.com/gophers0/storage/internal/config"
+	"github.com/gophers0/storage/internal/repository/postgres"
+	"github.com/gophers0/storage/pkg/logger"
 	"github.com/labstack/echo"
 	"github.com/sirupsen/logrus"
 )

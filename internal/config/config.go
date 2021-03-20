@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/gophers0/users/internal/repository/postgres"
+	"github.com/gophers0/storage/internal/repository/postgres"
 	gaarx "github.com/zergu1ar/Gaarx"
 )
 

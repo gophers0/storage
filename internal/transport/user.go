@@ -1,6 +1,6 @@
 package transport
 
-import "github.com/gophers0/users/pkg/errs"
+import "github.com/gophers0/storage/pkg/errs"
 
 type CreateUserRequest struct {
 	Login    string `json:"login"`

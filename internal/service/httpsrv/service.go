@@ -1,11 +1,11 @@
 package httpsrv
 
 import (
-	"github.com/gophers0/users/internal/config"
-	"github.com/gophers0/users/internal/middlewares"
-	"github.com/gophers0/users/internal/repository/postgres"
-	"github.com/gophers0/users/internal/service/httpsrv/handlers"
-	"github.com/gophers0/users/pkg/bindings"
+	"github.com/gophers0/storage/internal/config"
+	"github.com/gophers0/storage/internal/middlewares"
+	"github.com/gophers0/storage/internal/repository/postgres"
+	"github.com/gophers0/storage/internal/service/httpsrv/handlers"
+	"github.com/gophers0/storage/pkg/bindings"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/sirupsen/logrus"
