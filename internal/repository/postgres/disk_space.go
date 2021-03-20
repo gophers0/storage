@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"errors"
 	"github.com/gophers0/storage/internal/model"
 	"github.com/gophers0/storage/pkg/errs"
 )
@@ -29,7 +28,6 @@ func (r *Repo) FindOrCreateUserDiskSpace(userId uint) (*model.DiskSpace, error) 
 		OverallSpace:  model.DiskSpaceDefaultSpace,
 		FreeSpace:     model.DiskSpaceDefaultSpace,
 		OccupiedSpace: 0,
-		ReservedSpace: 0,
 	}
 
 	if err := r.DB.
@@ -73,82 +71,26 @@ func (r *Repo) DeleteDiskSpace(id uint) (*model.DiskSpace, []*model.File, error)
 	return diskSpace, files, err
 }
 
-func (r *Repo) ReserveDiskSpace(userId uint, volume uint) (*model.DiskSpace, error) {
-	var err error
-
+func (r *Repo) FillDiskSpace(userId, volume uint) (*model.DiskSpace, error) {
 	mux.Lock()
 	defer mux.Unlock()
-
 	diskSpace := &model.DiskSpace{}
-	if err = r.DB.
+	if err := r.DB.
 		Where(model.DiskSpace{UserOwnerId: userId}).
 		First(diskSpace).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 
 	if volume > diskSpace.FreeSpace {
-		return nil, errs.NewStack(errors.New("Not enough free space"))
+		return nil, errs.NotAvailableFreeSpace
 	}
+
 	diskSpace.FreeSpace -= volume
-	diskSpace.ReservedSpace += volume
-
-	if err := r.DB.
-		Update(diskSpace).Error; err != nil {
-		return nil, errs.NewStack(err)
-	}
-	return diskSpace, nil
-}
-
-func (r *Repo) CancelReserveDiskSpace(userId uint, volume uint) (*model.DiskSpace, error) {
-	var err error
-
-	mux.Lock()
-	defer mux.Unlock()
-
-	diskSpace := &model.DiskSpace{}
-	if err = r.DB.
-		Where(model.DiskSpace{UserOwnerId: userId}).
-		First(diskSpace).Error; err != nil {
-		return nil, errs.NewStack(err)
-	}
-
-	if volume > diskSpace.ReservedSpace {
-		return nil, errs.NewStack(errors.New("Less memory reserved than expected"))
-	}
-	diskSpace.FreeSpace += volume
-	diskSpace.ReservedSpace -= volume
-
-	if err := r.DB.
-		Update(diskSpace).Error; err != nil {
-		return nil, errs.NewStack(err)
-	}
-	return diskSpace, nil
-}
-
-func (r *Repo) AproveReserveDiskSpace(userId uint, volume uint) (*model.DiskSpace, error) {
-	var err error
-
-	mux.Lock()
-	defer mux.Unlock()
-
-	diskSpace := &model.DiskSpace{}
-	if err = r.DB.
-		Where(model.DiskSpace{UserOwnerId: userId}).
-		First(diskSpace).Error; err != nil {
-		return nil, errs.NewStack(err)
-	}
-
-	if volume > diskSpace.ReservedSpace {
-		return nil, errs.NewStack(errors.New("Less memory reserved than expected"))
-	} else if volume > diskSpace.FreeSpace {
-		return nil, errs.NewStack(errors.New("Less memory free than expected"))
-	}
-	diskSpace.ReservedSpace -= volume
 	diskSpace.OccupiedSpace += volume
 
-	if err := r.DB.
-		Update(diskSpace).Error; err != nil {
+	if err := r.DB.Save(diskSpace).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
+
 	return diskSpace, nil
 }

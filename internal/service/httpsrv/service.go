@@ -64,6 +64,12 @@ func (s *Service) Start(a *gaarx.App) error {
 		profile.OPTIONS("/", echo.MethodNotAllowedHandler)
 	}
 
+	upload := e.Group("/upload", authMw...)
+	{
+		upload.POST("/file", h.UploadFile)
+		upload.OPTIONS("/file", echo.MethodNotAllowedHandler)
+	}
+
 	return e.Start(":" + s.app.Config().(*config.Config).Api.Port)
 }
 

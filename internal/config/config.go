@@ -23,7 +23,8 @@ type Config struct {
 	Api struct {
 		Port string `json:"port"`
 	} `json:"api"`
-	Users string `json:"users"`
+	Users   string `json:"users"`
+	Storage string `json:"storage"`
 }
 type DB struct {
 	Dialect  string `json:"postgres"`

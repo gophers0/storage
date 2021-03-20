@@ -4,7 +4,7 @@
     "db": {
       "dialect": "postgres",
       "host": "localhost",
-      "port": "15432",
+      "port": "25432",
       "user": "app",
       "password": "pass",
       "database": "app"
@@ -17,5 +17,6 @@
   "api": {
     "port": 3000
   },
-  "users": "http://localhost:8080/"
+  "users": "http://localhost:8080/",
+  "storage": "./storage"
 }

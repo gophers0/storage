@@ -79,4 +79,6 @@ var (
 	InvalidToken               = newCodeError(200001, "Некорректный токен авторизации", "InvalidToken", http.StatusForbidden)
 	AuthorizationHeaderMissing = newCodeError(200004, "Не передан авторизационный заголовок", "AuthorizationHeaderMissing", http.StatusUnauthorized)
 	InvalidAuthorizationHeader = newCodeError(200005, "Некорректный заголовок авторизации", "InvalidAuthorizationHeader", http.StatusUnauthorized)
+
+	NotAvailableFreeSpace = newCodeError(300001, "Недостаточно места на диске", "NotAvailableFreeSpace", http.StatusBadRequest)
 )

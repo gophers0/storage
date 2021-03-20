@@ -1,7 +1,6 @@
 package postgres
 
 import (
-	"errors"
 	"github.com/gophers0/storage/internal/model"
 	"github.com/gophers0/storage/pkg/errs"
 	"path/filepath"
@@ -20,6 +19,16 @@ func (r *Repo) FindFiles(ids []uint) ([]*model.File, error) {
 	return files, nil
 }
 
+func (r *Repo) FindFile(name string, dSpaceId uint) (*model.File, error) {
+	file := &model.File{}
+
+	if err := r.DB.Model(file).Where("disk_space_id = ? AND name = ?", dSpaceId, name).First(file).Error; err != nil {
+		return nil, err
+	}
+
+	return file, nil
+}
+
 func (r *Repo) FindDiskFiles(diskSpaceId uint) ([]*model.File, error) {
 	mux.RLock()
 	defer mux.RUnlock()
@@ -33,32 +42,19 @@ func (r *Repo) FindDiskFiles(diskSpaceId uint) ([]*model.File, error) {
 	return catalogs, nil
 }
 
-func (r *Repo) CreateFile(name string, size, diskSpaceId uint) (*model.File, error) {
-	var err error
-
+func (r *Repo) CreateFile(name, mime string, size, diskSpaceId uint) (*model.File, error) {
 	mux.Lock()
 	defer mux.Unlock()
-
-	// check dick  !!!!!!!!!!!!!!!!!! МОЖЕТ БЫТЬ, ЧТО БЛАГОДАРЯ КЛЮЧУ МОЖНО СТЕРЕТЬ ПРОВЕРКУ
-	diskSpace := &model.DiskSpace{}
-	if err = r.DB.
-		Where("id = ?", diskSpaceId).
-		First(diskSpace).Error; err != nil {
-		return nil, errs.NewStack(err)
-	}
-	if err != nil {
-		return nil, errs.NewStack(errors.New("Disk space does not exists!"))
-	}
 
 	file := &model.File{
 		Name:        name,
 		Size:        size,
+		Mime:        mime,
 		DiskSpaceId: diskSpaceId,
 	}
-	file.FileMime = filepath.Ext(name)
+	file.Mime = filepath.Ext(name)
 
-	if err := r.DB.
-		Create(file).Error; err != nil {
+	if err := r.DB.Create(file).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 	return file, nil

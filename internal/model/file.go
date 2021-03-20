@@ -2,12 +2,10 @@ package model
 
 type File struct {
 	Model
-	Size     uint
-	Name     string
-	FileMime string // file type
+	Size uint
+	Name string
+	Mime string // file type
 
 	DiskSpaceId uint
-	CatalogId   uint // file catalog id
-
-	DiskSpace DiskSpace `gorm:"foreignKey:DiskSpaceId"`
+	DiskSpace   DiskSpace `gorm:"foreignKey:DiskSpaceId"`
 }

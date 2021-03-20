@@ -12,5 +12,4 @@ type DiskSpace struct {
 	OverallSpace  uint // in bytes
 	FreeSpace     uint // in bytes
 	OccupiedSpace uint // in bytes
-	ReservedSpace uint // in bytes
 }
