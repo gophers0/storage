@@ -4,12 +4,12 @@ import (
 	"errors"
 	"github.com/gophers0/storage/internal/model"
 	"github.com/gophers0/storage/pkg/errs"
-	"sync"
 )
 
-var mux = sync.Mutex{} // simple slow way to solve race condition problem in ReservedDiskSpace
-
 func (r *Repo) FindDiskSpace(id uint) (*model.DiskSpace, error) {
+	mux.RLock()
+	defer mux.RUnlock()
+
 	diskSpace := &model.DiskSpace{}
 	if err := r.DB.
 		Where("id = ?", id).
@@ -30,6 +30,9 @@ func (r *Repo) FindUserDiskSpace(user_id uint) (*model.DiskSpace, error) {
 }
 
 func (r *Repo) CreateDiskSpace(user_id uint) (*model.DiskSpace, error) {
+	mux.Lock()
+	defer mux.Unlock()
+
 	diskSpace := &model.DiskSpace{}
 
 	diskSpace.UserOwnerId = user_id
@@ -47,6 +50,9 @@ func (r *Repo) CreateDiskSpace(user_id uint) (*model.DiskSpace, error) {
 }
 
 func (r *Repo) DeleteDiskSpace(user_id uint) (*model.DiskSpace, error) {
+	mux.Lock()
+	defer mux.Unlock()
+
 	var err error
 	diskSpace := &model.DiskSpace{}
 
@@ -108,6 +114,9 @@ func (r *Repo) ReservedDiskSpace(user_id uint, volume uint) (*model.DiskSpace, e
 }
 
 func (r *Repo) CancelReservedDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
+	mux.Lock()
+	defer mux.Unlock()
+
 	var err error
 	diskSpace, err := r.FindUserDiskSpace(user_id)
 	if err != nil {
@@ -128,6 +137,9 @@ func (r *Repo) CancelReservedDiskSpace(user_id uint, volume uint) (*model.DiskSp
 }
 
 func (r *Repo) AproveReservedDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
+	mux.Lock()
+	defer mux.Unlock()
+
 	var err error
 	diskSpace, err := r.FindUserDiskSpace(user_id)
 	if err != nil {
