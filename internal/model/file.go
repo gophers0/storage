@@ -10,5 +10,4 @@ type File struct {
 	CatalogId   uint // file catalog id
 
 	DiskSpace DiskSpace `gorm:"foreignKey:DiskSpaceId"`
-	Catalog   Catalog   `gorm:"foreignKey:CatalogId"`
 }

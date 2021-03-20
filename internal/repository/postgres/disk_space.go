@@ -19,22 +19,7 @@ func (r *Repo) FindDiskSpace(id uint) (*model.DiskSpace, error) {
 	return diskSpace, nil
 }
 
-func (r *Repo) FindUserDiskSpace(user_id uint) (*model.DiskSpace, error) {
-	diskSpace := &model.DiskSpace{}
-	if err := r.DB.
-		Where(model.DiskSpace{UserOwnerId: user_id}).
-		First(diskSpace).Error; err != nil {
-		return nil, errs.NewStack(err)
-	}
-	return diskSpace, nil
-}
-
-func (r *Repo) CreateDiskSpace(user_id uint) (*model.DiskSpace, error) {
-
-	_, err := r.FindUserDiskSpace(user_id)
-	if err == nil {
-		return nil, errs.NewStack(errors.New("The user already has disk space"))
-	}
+func (r *Repo) FindOrCreateUserDiskSpace(user_id uint) (*model.DiskSpace, error) {
 
 	mux.Lock()
 	defer mux.Unlock()
@@ -48,7 +33,8 @@ func (r *Repo) CreateDiskSpace(user_id uint) (*model.DiskSpace, error) {
 	}
 
 	if err := r.DB.
-		Create(diskSpace).Error; err != nil {
+		Where(model.DiskSpace{UserOwnerId: user_id}).
+		FirstOrCreate(diskSpace).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 
@@ -73,15 +59,6 @@ func (r *Repo) DeleteDiskSpace(id uint) (*model.DiskSpace, []*model.File, error)
 		return nil, nil, errs.NewStack(err)
 	}
 
-	catalogs := []*model.Catalog{}
-	err = tx.
-		Where(model.Catalog{DiskSpaceId: diskSpace.ID}).
-		Delete(catalogs).Error
-	if err != nil {
-		tx.Rollback()
-		return nil, nil, errs.NewStack(err)
-	}
-
 	files := []*model.File{}
 	err = tx.
 		Where(model.File{DiskSpaceId: diskSpace.ID}).
@@ -97,12 +74,15 @@ func (r *Repo) DeleteDiskSpace(id uint) (*model.DiskSpace, []*model.File, error)
 }
 
 func (r *Repo) ReserveDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
+	var err error
+
 	mux.Lock()
 	defer mux.Unlock()
 
-	var err error
-	diskSpace, err := r.FindUserDiskSpace(user_id)
-	if err != nil {
+	diskSpace := &model.DiskSpace{}
+	if err = r.DB.
+		Where(model.DiskSpace{UserOwnerId: user_id}).
+		First(diskSpace).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 
@@ -120,12 +100,15 @@ func (r *Repo) ReserveDiskSpace(user_id uint, volume uint) (*model.DiskSpace, er
 }
 
 func (r *Repo) CancelReserveDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
+	var err error
+
 	mux.Lock()
 	defer mux.Unlock()
 
-	var err error
-	diskSpace, err := r.FindUserDiskSpace(user_id)
-	if err != nil {
+	diskSpace := &model.DiskSpace{}
+	if err = r.DB.
+		Where(model.DiskSpace{UserOwnerId: user_id}).
+		First(diskSpace).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 
@@ -143,12 +126,15 @@ func (r *Repo) CancelReserveDiskSpace(user_id uint, volume uint) (*model.DiskSpa
 }
 
 func (r *Repo) AproveReserveDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
+	var err error
+
 	mux.Lock()
 	defer mux.Unlock()
 
-	var err error
-	diskSpace, err := r.FindUserDiskSpace(user_id)
-	if err != nil {
+	diskSpace := &model.DiskSpace{}
+	if err = r.DB.
+		Where(model.DiskSpace{UserOwnerId: user_id}).
+		First(diskSpace).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 
