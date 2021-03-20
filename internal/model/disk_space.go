@@ -7,7 +7,7 @@ const (
 type DiskSpace struct {
 	Model
 
-	UserOwnerId uint
+	UserOwnerId uint `gorm:"index"`
 
 	OverallSpace  uint // in bytes
 	FreeSpace     uint // in bytes

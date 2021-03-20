@@ -15,6 +15,5 @@ var ModelsList = []interface{}{
 
 	File{},
 
-	User{},
 	UserAccessRight{},
 }
