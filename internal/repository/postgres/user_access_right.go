@@ -34,13 +34,16 @@ func (r *Repo) FindUserAccessRights(user_id uint) ([]*model.UserAccessRight, err
 
 func (r *Repo) CreateUserAccessRight(user_id, file_id, access_right_id uint) (*model.UserAccessRight, error) {
 	var err error
-	_, err = r.FindFile(file_id)
-	if err != nil {
-		return nil, errs.NewStack(errors.New("File does not exists"))
-	}
 
 	mux.Lock()
 	defer mux.Unlock()
+
+	file := &model.File{}
+	if err := r.DB.
+		Where("id = ?", file_id).
+		First(file).Error; err != nil {
+		return nil, errs.NewStack(err)
+	}
 
 	userAccessRight := &model.UserAccessRight{
 		UserId:            user_id,
