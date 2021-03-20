@@ -27,7 +27,7 @@ func (r *Repo) FindFiles(ids []uint) ([]*model.File, error) {
 	var files []*model.File
 	if err := r.DB.
 		Where("id in (?)", ids).
-		Find(files).Error; err != nil {
+		Find(&files).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 	return files, nil
