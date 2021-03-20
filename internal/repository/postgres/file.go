@@ -7,17 +7,17 @@ import (
 	"path/filepath"
 )
 
-func (r *Repo) FindFile(id uint) ([]*model.File, error) {
+func (r *Repo) FindFile(id uint) (*model.File, error) {
 	mux.RLock()
 	defer mux.RUnlock()
 
-	files := []*model.File{}
+	file := &model.File{}
 	if err := r.DB.
 		Where("id = ?", id).
-		First(files).Error; err != nil {
+		First(file).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
-	return files, nil
+	return file, nil
 }
 
 func (r *Repo) FindFiles(ids []uint) ([]*model.File, error) {
