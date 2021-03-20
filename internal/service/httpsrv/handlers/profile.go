@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gophers0/storage/internal/model"
@@ -21,6 +22,9 @@ func (h *Handlers) GetProfile(c echo.Context) error {
 	files, err := h.getDB().FindDiskFiles(dSpace.ID)
 	if err != nil {
 		return errs.NewStack(err)
+	}
+	for _, file := range files {
+		file.Preview = fmt.Sprintf("%s%d", file.Mime, file.ID)
 	}
 
 	trashFiles, err := h.getDB().FindDeletedDiskFiles(dSpace.ID)
