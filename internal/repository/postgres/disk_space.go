@@ -30,26 +30,32 @@ func (r *Repo) FindUserDiskSpace(user_id uint) (*model.DiskSpace, error) {
 }
 
 func (r *Repo) CreateDiskSpace(user_id uint) (*model.DiskSpace, error) {
+
+	_, err := r.FindUserDiskSpace(user_id)
+	if err == nil {
+		return nil, errs.NewStack(errors.New("The user already has disk space"))
+	}
+
 	mux.Lock()
 	defer mux.Unlock()
 
-	diskSpace := &model.DiskSpace{}
-
-	diskSpace.UserOwnerId = user_id
-	diskSpace.OverallSpace = model.DiskSpaceDefaultSpace
-	diskSpace.FreeSpace = diskSpace.OverallSpace
-	diskSpace.OccupiedSpace = 0
-	diskSpace.ReservedSpace = 0
+	diskSpace := &model.DiskSpace{
+		UserOwnerId:   user_id,
+		OverallSpace:  model.DiskSpaceDefaultSpace,
+		FreeSpace:     model.DiskSpaceDefaultSpace,
+		OccupiedSpace: 0,
+		ReservedSpace: 0,
+	}
 
 	if err := r.DB.
-		Where(model.DiskSpace{UserOwnerId: user_id}).
-		FirstOrCreate(diskSpace).Error; err != nil {
+		Create(diskSpace).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
+
 	return diskSpace, nil
 }
 
-func (r *Repo) DeleteDiskSpace(user_id uint) (*model.DiskSpace, error) {
+func (r *Repo) DeleteDiskSpace(id uint) (*model.DiskSpace, []*model.File, error) {
 	mux.Lock()
 	defer mux.Unlock()
 
@@ -60,11 +66,11 @@ func (r *Repo) DeleteDiskSpace(user_id uint) (*model.DiskSpace, error) {
 	tx := r.DB.Begin()
 
 	err = tx.
-		Where(model.DiskSpace{UserOwnerId: user_id}).
+		Where("id = ?", id).
 		Delete(diskSpace).Error
 	if err != nil {
 		tx.Rollback()
-		return diskSpace, errs.NewStack(err)
+		return nil, nil, errs.NewStack(err)
 	}
 
 	catalogs := []*model.Catalog{}
@@ -73,7 +79,7 @@ func (r *Repo) DeleteDiskSpace(user_id uint) (*model.DiskSpace, error) {
 		Delete(catalogs).Error
 	if err != nil {
 		tx.Rollback()
-		return diskSpace, errs.NewStack(err)
+		return nil, nil, errs.NewStack(err)
 	}
 
 	files := []*model.File{}
@@ -82,15 +88,15 @@ func (r *Repo) DeleteDiskSpace(user_id uint) (*model.DiskSpace, error) {
 		Delete(files).Error
 	if err != nil {
 		tx.Rollback()
-		return diskSpace, errs.NewStack(err)
+		return nil, nil, errs.NewStack(err)
 	}
 
 	tx.Commit()
 
-	return diskSpace, err
+	return diskSpace, files, err
 }
 
-func (r *Repo) ReservedDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
+func (r *Repo) ReserveDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
 	mux.Lock()
 	defer mux.Unlock()
 
@@ -113,7 +119,7 @@ func (r *Repo) ReservedDiskSpace(user_id uint, volume uint) (*model.DiskSpace, e
 	return diskSpace, nil
 }
 
-func (r *Repo) CancelReservedDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
+func (r *Repo) CancelReserveDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
 	mux.Lock()
 	defer mux.Unlock()
 
@@ -136,7 +142,7 @@ func (r *Repo) CancelReservedDiskSpace(user_id uint, volume uint) (*model.DiskSp
 	return diskSpace, nil
 }
 
-func (r *Repo) AproveReservedDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
+func (r *Repo) AproveReserveDiskSpace(user_id uint, volume uint) (*model.DiskSpace, error) {
 	mux.Lock()
 	defer mux.Unlock()
 
