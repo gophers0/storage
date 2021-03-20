@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/gophers0/users/internal/model"
 	"log"
 	"os"
 	"os/signal"
@@ -52,7 +53,7 @@ func main() {
 	application.GetLog().AddHook(filenameHook)
 	application.GetLog().SetLevel(logrus.Level(configs.System.Log.Level))
 	application.Initialize(
-		postgres.WithDatabase(configs.GetConnString(), configs.System.DB.Dialect),
+		postgres.WithDatabase(configs.GetConnString(), configs.System.DB.Dialect, model.ModelsList...),
 		gaarx.WithContext(ctx),
 		gaarx.WithServices(
 			httpsrv.New(application.GetLog()),

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"runtime/debug"
 
+	"github.com/gophers0/users/pkg/errs"
 	"github.com/labstack/echo"
-	"github.com/mc2soft/marketplace-backend/server/pkg/errs"
 )
 
 // Recover is a middleware that recovers panics from handlers, logs stacktrace and returns them as error.

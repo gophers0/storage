@@ -4,6 +4,7 @@ import (
 	"github.com/gophers0/users/internal/config"
 	"github.com/gophers0/users/internal/middlewares"
 	"github.com/gophers0/users/internal/repository/postgres"
+	"github.com/gophers0/users/internal/service/httpsrv/handlers"
 	"github.com/gophers0/users/pkg/bindings"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -35,7 +36,6 @@ func (s *Service) getLog() *logrus.Entry {
 
 func (s *Service) Start(a *gaarx.App) error {
 	s.app = a
-
 	e := echo.New()
 	e.Validator = &bindings.Validator{}
 
@@ -50,9 +50,23 @@ func (s *Service) Start(a *gaarx.App) error {
 		mw.Error(middlewares.ErrorHandler()),
 		mw.Recover(),
 	}
+	adminMw := append(commonMw, mw.AdminOnly())
+
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	}, commonMw...)
+
+	h := handlers.New(a)
+
+	user := e.Group("/user", adminMw...)
+	{
+		user.POST("/", h.CreateUser)
+		user.OPTIONS("/", echo.MethodNotAllowedHandler)
+
+		user.PUT("/:id", h.UpdateUser)
+		user.DELETE("/:id", h.DeleteUser)
+		user.OPTIONS("/:id", echo.MethodNotAllowedHandler)
+	}
 
 	return e.Start(":" + s.app.Config().(*config.Config).Api.Port)
 }

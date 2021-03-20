@@ -75,4 +75,8 @@ var (
 	TransportError         = newCodeError(2, "Что-то пошло не так. Попробуйте позже.", "TransportError", http.StatusInternalServerError) // Ошибка на уровне HTTP
 	RequestValidationError = newCodeError(100001, "Некорректно указаны данные.", "RequestValidationError", http.StatusBadRequest)        // Запрос не проходит базовую валидацию по полям
 	ForbiddenOperation     = newCodeError(403, "Вам не разрешено выполнять это действие", "ForbiddenOperation", http.StatusForbidden)
+
+	InvalidToken                    = newCodeError(200001, "Некорректный токен авторизации", "InvalidToken", http.StatusForbidden)
+	UserAlreadyExists               = newCodeError(200002, "Юзер уже существует", "UserAlreadyExists", http.StatusBadRequest)
+	AuthorizationInvalidCredentials = newCodeError(200003, "Неверный логин-пароль", "AuthorizationInvalidCredentials", http.StatusBadRequest)
 )
