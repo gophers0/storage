@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"github.com/gophers0/storage/pkg/users"
 	"time"
 
 	"github.com/google/uuid"
@@ -12,16 +13,19 @@ import (
 )
 
 type Middleware struct {
-	repo   *postgres.Repo
-	cfg    *config.Config
-	logger *logrus.Logger
+	repo    *postgres.Repo
+	cfg     *config.Config
+	logger  *logrus.Logger
+	UserApi *users.Api
 }
 
 func New(cfg interface{}, logger *logrus.Logger, repo *postgres.Repo) *Middleware {
+	appCfg := cfg.(*config.Config)
 	return &Middleware{
-		repo:   repo,
-		cfg:    cfg.(*config.Config),
-		logger: logger,
+		repo:    repo,
+		cfg:     appCfg,
+		logger:  logger,
+		UserApi: users.NewApi(appCfg.External.UsersApi.Host),
 	}
 }
 

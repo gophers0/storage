@@ -16,5 +16,10 @@
   },
   "api": {
     "port": 3000
+  },
+  "external": {
+    "users_api": {
+      "host": "localhost:8080"
+    }
   }
 }

@@ -76,7 +76,7 @@ var (
 	RequestValidationError = newCodeError(100001, "Некорректно указаны данные.", "RequestValidationError", http.StatusBadRequest)        // Запрос не проходит базовую валидацию по полям
 	ForbiddenOperation     = newCodeError(403, "Вам не разрешено выполнять это действие", "ForbiddenOperation", http.StatusForbidden)
 
-	InvalidToken                    = newCodeError(200001, "Некорректный токен авторизации", "InvalidToken", http.StatusForbidden)
-	UserAlreadyExists               = newCodeError(200002, "Юзер уже существует", "UserAlreadyExists", http.StatusBadRequest)
-	AuthorizationInvalidCredentials = newCodeError(200003, "Неверный логин-пароль", "AuthorizationInvalidCredentials", http.StatusBadRequest)
+	InvalidToken               = newCodeError(200001, "Некорректный токен авторизации", "InvalidToken", http.StatusForbidden)
+	AuthorizationHeaderMissing = newCodeError(200004, "Не передан авторизационный заголовок", "AuthorizationHeaderMissing", http.StatusUnauthorized)
+	InvalidAuthorizationHeader = newCodeError(200005, "Некорректный заголовок авторизации", "InvalidAuthorizationHeader", http.StatusUnauthorized)
 )

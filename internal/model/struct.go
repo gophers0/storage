@@ -12,8 +12,6 @@ type Model struct {
 var ModelsList = []interface{}{
 	Catalog{},
 	DiskSpace{},
-
 	File{},
-
 	UserAccessRight{},
 }
