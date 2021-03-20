@@ -68,7 +68,7 @@ func (r *Repo) CreateFile(name string, size, diskSpaceId uint) (*model.File, err
 		Size:        size,
 		DiskSpaceId: diskSpaceId,
 	}
-	file.FileMime = filepath.Ext(name)
+	file.Mime = filepath.Ext(name)
 
 	if err := r.DB.
 		Create(file).Error; err != nil {
