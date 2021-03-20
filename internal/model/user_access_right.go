@@ -3,9 +3,7 @@ package model
 const (
 	AccessRightIdOwner uint = 1
 
-	AccessRightIdSee    uint = 11 // see in catalog
-	AccessRightIdRead   uint = 12 // see in open in app
-	AccessRightIdLoad   uint = 13
+	AccessRightIdRead   uint = 11 // see in open in app
 	AccessRightIdDelete uint = 21
 
 	AccessRightIdGiveRead        uint = 31
