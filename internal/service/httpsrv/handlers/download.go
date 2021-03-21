@@ -54,6 +54,7 @@ func (h *Handlers) GetFile(c echo.Context) error {
 	if err != nil {
 		return errs.NewStack(err)
 	}
+	defer fi.Close()
 
 	body := []byte("")
 	if _, err := fi.Read(body); err != nil {
@@ -71,7 +72,7 @@ func (h *Handlers) GetFile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	return c.Blob(http.StatusOK, file.Mime, []byte(res))
+	return c.Blob(http.StatusOK, file.Mime, res)
 }
 
 func (h *Handlers) RemoveFile(c echo.Context) error {
