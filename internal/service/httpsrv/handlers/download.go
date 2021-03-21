@@ -50,7 +50,7 @@ func (h *Handlers) GetFile(c echo.Context) error {
 
 	// get content, ungzip it and pass to response
 	storagePath := h.app.Config().(*config.Config).Storage
-	fi, err := os.Open(fmt.Sprintf("%s/%d/%s.gzip", storagePath, user.Id, file.Name))
+	fi, err := os.Open(fmt.Sprintf("%s/%d/%s.gzip", storagePath, file.DiskSpace.UserOwnerId, file.Name))
 	if err != nil {
 		return errs.NewStack(err)
 	}
