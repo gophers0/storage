@@ -3,7 +3,7 @@ package transport
 import "github.com/gophers0/storage/internal/model"
 
 type ListUsersRequest struct {
-	Login  string `json:"login"`
+	Login  string `json:"user_name"`
 	Limit  int    `json:"limit"`
 	Offset int    `json:"offset"`
 }
