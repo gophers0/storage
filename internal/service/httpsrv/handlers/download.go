@@ -63,7 +63,6 @@ func (h *Handlers) GetFile(c echo.Context) error {
 	if res, err = ioutil.ReadAll(r); err != nil {
 		return errs.NewStack(err)
 	}
-	r.Close()
 
 	return c.Blob(http.StatusOK, file.Mime, res)
 }
