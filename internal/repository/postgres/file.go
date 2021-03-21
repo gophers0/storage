@@ -90,17 +90,15 @@ func (r *Repo) UpdateFile(file *model.File) (*model.File, error) {
 	return file, errs.NewStack(err)
 }
 
-func (r *Repo) DeleteFile(id uint) (*model.File, error) {
+func (r *Repo) DeleteFile(id uint) error {
 	var err error
 
 	mux.Lock()
 	defer mux.Unlock()
-
-	file := &model.File{}
 	if err = r.DB.
 		Where("id = ?", id).
-		First(file).Error; err != nil {
-		return nil, errs.NewStack(err)
+		Delete(&model.File{}).Error; err != nil {
+		return errs.NewStack(err)
 	}
-	return file, nil
+	return nil
 }

@@ -75,8 +75,28 @@ func (h *Handlers) GetFile(c echo.Context) error {
 }
 
 func (h *Handlers) RemoveFile(c echo.Context) error {
-	_, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
+		return errs.NewStack(err)
+	}
+
+	user := c.Get(transport.CtxUserKey).(users.User)
+
+	dSpace, err := h.getDB().FindOrCreateUserDiskSpace(uint(user.Id))
+	if err != nil {
+		return errs.NewStack(err)
+	}
+
+	file, err := h.getDB().FindFileById(uint(id))
+	if err != nil {
+		return errs.NewStack(err)
+	}
+
+	if file.DiskSpaceId != dSpace.ID && user.Role != users.UserRoleAdmin {
+		return errs.ForbiddenOperation.AddInfo("Вам не разрешено удалять этот файл")
+	}
+
+	if err := h.getDB().DeleteFile(file.ID); err != nil {
 		return errs.NewStack(err)
 	}
 
