@@ -80,6 +80,9 @@ func (s *Service) Start(a *gaarx.App) error {
 	{
 		cms.POST("/user", h.ViewFilesByAdmin)
 		cms.OPTIONS("/user", echo.MethodNotAllowedHandler)
+
+		cms.POST("/users/list", h.ListUsers)
+		cms.OPTIONS("/users/list", echo.MethodNotAllowedHandler)
 	}
 
 	file := e.Group("/file", authMw...)

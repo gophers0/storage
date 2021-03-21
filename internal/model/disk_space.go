@@ -6,10 +6,9 @@ const (
 
 type DiskSpace struct {
 	Model
-
-	UserOwnerId uint `gorm:"index"`
-
-	OverallSpace  int64 // in bytes
-	FreeSpace     int64 // in bytes
-	OccupiedSpace int64 // in bytes
+	UserOwnerId   uint   `json:"user_id" gorm:"index"`
+	OverallSpace  int64  `json:"overall_space"`  // in bytes
+	FreeSpace     int64  `json:"free_space"`     // in bytes
+	OccupiedSpace int64  `json:"occupied_space"` // in bytes
+	Files         []File `json:"files"`
 }

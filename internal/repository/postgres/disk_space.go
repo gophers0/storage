@@ -30,7 +30,9 @@ func (r *Repo) FindOrCreateUserDiskSpace(userId uint) (*model.DiskSpace, error) 
 		OccupiedSpace: 0,
 	}
 
-	if err := r.DB.
+	if err := r.DB.Set("gorm:association_autoupdate", false).
+		Set("gorm:association_autocreate", false).
+		Preload("Files").
 		Where(model.DiskSpace{UserOwnerId: userId}).
 		FirstOrCreate(diskSpace).Error; err != nil {
 		return nil, errs.NewStack(err)
