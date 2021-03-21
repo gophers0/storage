@@ -3,20 +3,20 @@
   "system": {
     "db": {
       "dialect": "postgres",
-      "host": "localhost",
-      "port": "25432",
+      "host": "storage_db",
+      "port": "5432",
       "user": "app",
       "password": "pass",
       "database": "app"
     },
     "log": {
-      "level": 5,
+      "level": 4,
       "filename": ""
     }
   },
   "api": {
     "port": 3000
   },
-  "users": "http://localhost:8080/",
+  "users": "http://users_app:3000/",
   "storage": "./storage"
 }
