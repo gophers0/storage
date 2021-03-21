@@ -26,13 +26,7 @@ func (h *Handlers) ViewFilesByAdmin(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	files, err := h.getDB().FindDiskFiles(dSpace.ID)
-	if err != nil {
-		return errs.NewStack(err)
-	}
-
 	return c.JSON(http.StatusOK, transport.ViewFilesByAdminResponse{
 		DiskSpace: dSpace,
-		Files:     files,
 	})
 }

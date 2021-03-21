@@ -12,7 +12,6 @@ type (
 	}
 	ViewFilesByAdminResponse struct {
 		DiskSpace *model.DiskSpace `json:"disk_space"`
-		Files     []*model.File    `json:"files"`
 	}
 )
 
