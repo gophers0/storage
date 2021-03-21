@@ -21,7 +21,7 @@ func (h *Handlers) ViewFilesByAdmin(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	dSpace, err := h.getDB().FindOrCreateUserDiskSpace(uint(user.Code))
+	dSpace, err := h.getDB().FindOrCreateUserDiskSpace(uint(user.Records[0].Id))
 	if err != nil {
 		return errs.NewStack(err)
 	}
