@@ -85,6 +85,7 @@ func (s *Service) Start(a *gaarx.App) error {
 	file := e.Group("/file", authMw...)
 	{
 		file.GET("/:id", h.GetFile)
+		file.DELETE("/:id", h.RemoveFile)
 		file.OPTIONS("/:id", echo.MethodNotAllowedHandler)
 	}
 

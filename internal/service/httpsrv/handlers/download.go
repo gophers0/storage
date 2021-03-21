@@ -73,3 +73,12 @@ func (h *Handlers) GetFile(c echo.Context) error {
 
 	return c.Blob(http.StatusOK, file.Mime, res)
 }
+
+func (h *Handlers) RemoveFile(c echo.Context) error {
+	_, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return errs.NewStack(err)
+	}
+
+	return c.JSON(http.StatusOK, transport.BaseResponse{})
+}
