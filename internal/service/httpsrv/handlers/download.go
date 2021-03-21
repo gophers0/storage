@@ -8,6 +8,7 @@ import (
 	"github.com/gophers0/storage/pkg/errs"
 	"github.com/gophers0/storage/pkg/users"
 	"github.com/labstack/echo"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -59,13 +60,9 @@ func (h *Handlers) GetFile(c echo.Context) error {
 	}
 
 	var res []byte
-	_, err = r.Read(res)
-	if err != nil {
+	if res, err = ioutil.ReadAll(r); err != nil {
 		return errs.NewStack(err)
 	}
-	//if res, err = ioutil.ReadAll(r); err != nil {
-	//	return errs.NewStack(err)
-	//}
 
 	return c.Blob(http.StatusOK, file.Mime, res)
 }
