@@ -55,10 +55,10 @@ func (h *Handlers) GetFile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	body := []byte("")
-	if _, err := fi.Read(body); err != nil {
-		return errs.NewStack(err)
-	}
+	//body := []byte("")
+	//if _, err := fi.Read(body); err != nil {
+	//	return errs.NewStack(err)
+	//}
 
 	r, err := gzip.NewReader(fi)
 	if err != nil {
