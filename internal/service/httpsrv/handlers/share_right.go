@@ -42,6 +42,10 @@ func (h *Handlers) ShareReadRight(c echo.Context) error {
 		return errs.NewStack(errors.New("user is not owner of this file"))
 	}
 
+	if userRecipient.Records[0].Id == userOwner.Id {
+		return errs.NewStack(errors.New("you is owner"))
+	}
+
 	_, err = h.getDB().CreateUserAccessRight(
 		uint(userRecipient.Records[0].Id),
 		uint(req.FileId),
