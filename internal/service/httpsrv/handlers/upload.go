@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"bufio"
 	"compress/gzip"
 	"errors"
 	"fmt"
@@ -38,8 +37,7 @@ func (h *Handlers) UploadFile(c echo.Context) error {
 	}
 	defer src.Close()
 
-	read := bufio.NewReader(src)
-	fileContent, err := ioutil.ReadAll(read)
+	fileContent, err := ioutil.ReadAll(src)
 	if err != nil {
 		return errs.NewStack(err)
 	}
@@ -49,6 +47,7 @@ func (h *Handlers) UploadFile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 	dstFileName := fmt.Sprintf("%s/%d/%s.gzip", storagePath, user.Id, file.Filename)
+
 	dst, err := os.Create(dstFileName)
 	if err != nil {
 		return errs.NewStack(err)
