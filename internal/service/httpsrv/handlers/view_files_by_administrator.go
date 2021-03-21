@@ -10,7 +10,7 @@ import (
 )
 
 func (h *Handlers) ViewFilesByAdmin(c echo.Context) error {
-	req := transport.ViewFilesByAdminRequest{}
+	req := &transport.ViewFilesByAdminRequest{}
 	if err := transport.BindAndValidate(c, req); err != nil {
 		return errs.NewStack(err)
 	}
