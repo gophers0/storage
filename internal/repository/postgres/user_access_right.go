@@ -50,7 +50,7 @@ func (r *Repo) CreateUserAccessRight(userId, fileId, accessRightId uint) (*model
 		AccessRightTypeId: accessRightId,
 	}
 
-	if err := r.DB.FirstOrCreate(userAccessRight).Error; err != nil {
+	if err := r.DB.Debug().Where(userAccessRight).FirstOrCreate(userAccessRight).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 
