@@ -13,7 +13,7 @@ import (
 )
 
 func (h *Handlers) ShareReadRight(c echo.Context) error {
-	req := transport.ShareReadRightRequest{}
+	req := &transport.ShareReadRightRequest{}
 	if err := transport.BindAndValidate(c, req); err != nil {
 		return errs.NewStack(err)
 	}
