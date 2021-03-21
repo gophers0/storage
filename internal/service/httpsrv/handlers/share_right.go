@@ -18,7 +18,7 @@ func (h *Handlers) ShareReadRight(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	userOwner := c.Get(transport.CtxUserKey).(*users.User)
+	userOwner := c.Get(transport.CtxUserKey).(users.User)
 
 	usersAPI := users.NewApi(h.app.Config().(*config.Config).Users)
 	userRecipient, err := usersAPI.SearchUser(req.UserName)
