@@ -16,7 +16,7 @@ func (h *Handlers) ViewFilesByAdmin(c echo.Context) error {
 	}
 
 	usersAPI := users.NewApi(h.app.Config().(*config.Config).Users)
-	user, err := usersAPI.SearchUser(req.UserName)
+	user, err := usersAPI.SearchUser(req.UserName, c.Request().Header[transport.AuthorizationHeader][0])
 	if err != nil {
 		return errs.NewStack(err)
 	}

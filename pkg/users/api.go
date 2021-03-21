@@ -24,7 +24,7 @@ func (api *Api) CheckToken(userId int, token string) (*CheckTokenResponse, error
 	if err != nil {
 		return nil, errs.NewStack(err)
 	}
-	resBody, err := api.postRequest("auth/checkToken", reqBody)
+	resBody, err := api.postRequest("auth/checkToken", "", reqBody)
 	if err != nil {
 		return nil, errs.NewStack(err)
 	}
@@ -37,13 +37,13 @@ func (api *Api) CheckToken(userId int, token string) (*CheckTokenResponse, error
 	return resp, nil
 }
 
-func (api *Api) SearchUser(login string) (*SearchUserResponse, error) {
+func (api *Api) SearchUser(login, authToken string) (*SearchUserResponse, error) {
 	req := &SearchUserRequest{Login: login}
 	reqBody, err := json.Marshal(req)
 	if err != nil {
 		return nil, errs.NewStack(err)
 	}
-	resBody, err := api.postRequest("search/user", reqBody)
+	resBody, err := api.postRequest("search/user", authToken, reqBody)
 	if err != nil {
 		return nil, errs.NewStack(err)
 	}

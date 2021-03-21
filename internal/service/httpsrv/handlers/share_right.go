@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gophers0/storage/internal/config"
@@ -19,9 +20,10 @@ func (h *Handlers) ShareReadRight(c echo.Context) error {
 	}
 
 	userOwner := c.Get(transport.CtxUserKey).(users.User)
+	session := c.Get(transport.CtxSessionKey).(users.Session)
 
 	usersAPI := users.NewApi(h.app.Config().(*config.Config).Users)
-	userRecipient, err := usersAPI.SearchUser(req.UserName)
+	userRecipient, err := usersAPI.SearchUser(req.UserName, fmt.Sprintf("%d:%s", session.User.Id, session.Token))
 	if err != nil || len(userRecipient.Records) == 0 {
 		return errs.NewStack(err)
 	}

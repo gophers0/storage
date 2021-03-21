@@ -42,7 +42,7 @@ func (r *Repo) CreateUserAccessRight(userId, fileId, accessRightId uint) (*model
 		return nil, errs.NewStack(err)
 	}
 
-	userAccessRight := &model.UserAccessRight{
+	userAccessRight := model.UserAccessRight{
 		UserId:            userId,
 		FileId:            file.ID,
 		AccessRightTypeId: accessRightId,
@@ -51,11 +51,11 @@ func (r *Repo) CreateUserAccessRight(userId, fileId, accessRightId uint) (*model
 	if err := r.DB.
 		Model(&model.UserAccessRight{}).
 		Where("user_id = ? AND file_id = ? AND access_right_type_id = ?", userId, file.ID, accessRightId).
-		FirstOrCreate(userAccessRight).Error; err != nil {
+		FirstOrCreate(&userAccessRight).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 
-	return userAccessRight, nil
+	return &userAccessRight, nil
 }
 
 func (r *Repo) DeleteUserAccessRight(userId, fileId, accessRightId uint) (*model.UserAccessRight, error) {

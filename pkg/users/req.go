@@ -8,7 +8,7 @@ import (
 	"github.com/gophers0/storage/pkg/errs"
 )
 
-func (api *Api) postRequest(uri string, payload []byte) ([]byte, error) {
+func (api *Api) postRequest(uri string, auth string, payload []byte) ([]byte, error) {
 	request, err := http.NewRequest("POST", api.BaseUrl+uri, bytes.NewBuffer(payload))
 	if err != nil {
 		return nil, errs.NewStack(err)
@@ -16,6 +16,9 @@ func (api *Api) postRequest(uri string, payload []byte) ([]byte, error) {
 
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "application/json")
+	if auth != "" {
+		request.Header.Set("Authorization", auth)
+	}
 
 	client := &http.Client{}
 
