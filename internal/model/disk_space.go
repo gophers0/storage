@@ -1,7 +1,7 @@
 package model
 
 const (
-	DiskSpaceDefaultSpace int64 = 1024 * 1024
+	DiskSpaceDefaultSpace int64 = 1024 * 1024 * 100
 )
 
 type DiskSpace struct {
