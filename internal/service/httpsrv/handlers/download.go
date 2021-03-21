@@ -58,12 +58,16 @@ func (h *Handlers) GetFile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	//var res []byte
+	var res []byte
+	_, err = r.Read(res)
+	if err != nil {
+		return errs.NewStack(err)
+	}
 	//if res, err = ioutil.ReadAll(r); err != nil {
 	//	return errs.NewStack(err)
 	//}
 
-	return c.Stream(http.StatusOK, file.Mime, r)
+	return c.Blob(http.StatusOK, file.Mime, res)
 }
 
 func (h *Handlers) RemoveFile(c echo.Context) error {
