@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"bufio"
 	"compress/gzip"
 	"fmt"
 	"github.com/gophers0/storage/internal/config"
@@ -9,6 +8,7 @@ import (
 	"github.com/gophers0/storage/pkg/errs"
 	"github.com/gophers0/storage/pkg/users"
 	"github.com/labstack/echo"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -55,10 +55,10 @@ func (h *Handlers) GetFile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	//body := []byte("")
-	//if _, err := fi.Read(body); err != nil {
-	//	return errs.NewStack(err)
-	//}
+	body := []byte("")
+	if _, err := fi.Read(body); err != nil {
+		return errs.NewStack(err)
+	}
 
 	r, err := gzip.NewReader(fi)
 	if err != nil {
@@ -66,21 +66,10 @@ func (h *Handlers) GetFile(c echo.Context) error {
 	}
 	defer r.Close()
 
-	scanner := bufio.NewScanner(r)
-	done := false
-	res := ""
-	for scanner.Scan() {
-		res = scanner.Text()
-		done = true
-		if done {
-			break
-		}
+	var res []byte
+	if res, err = ioutil.ReadAll(r); err != nil {
+		return errs.NewStack(err)
 	}
-
-	//var res []byte
-	//if res, err = ioutil.ReadAll(r); err != nil {
-	//	return errs.NewStack(err)
-	//}
 
 	return c.Blob(http.StatusOK, file.Mime, []byte(res))
 }
