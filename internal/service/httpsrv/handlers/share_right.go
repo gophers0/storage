@@ -22,7 +22,7 @@ func (h *Handlers) ShareReadRight(c echo.Context) error {
 
 	usersAPI := users.NewApi(h.app.Config().(*config.Config).Users)
 	userRecipient, err := usersAPI.SearchUser(req.UserName)
-	if err != nil {
+	if err != nil || len(userRecipient.Records) == 0 {
 		return errs.NewStack(err)
 	}
 
@@ -41,7 +41,7 @@ func (h *Handlers) ShareReadRight(c echo.Context) error {
 	}
 
 	_, err = h.getDB().CreateUserAccessRight(
-		uint(userRecipient.Code),
+		uint(userRecipient.Records[0].Id),
 		uint(req.FileId),
 		model.AccessRightIdRead)
 	if err != nil {
