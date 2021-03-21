@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gophers0/storage/internal/config"
 	"github.com/gophers0/storage/internal/transport"
@@ -80,7 +81,7 @@ func (h *Handlers) UploadFile(c echo.Context) error {
 	}
 
 	// Check that file is not exists
-	existsFile, err := h.getDB().FindFile(info.Name(), dSpace.ID)
+	existsFile, err := h.getDB().FindFile(strings.Trim(info.Name(), ".gzip"), dSpace.ID)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return errs.NewStack(err)
 	}
@@ -105,7 +106,7 @@ func (h *Handlers) UploadFile(c echo.Context) error {
 			return errs.NewStack(err)
 		}
 	} else {
-		fileEntity, err = h.getDB().CreateFile(info.Name(), req.Mime, info.Size(), dSpace.ID)
+		fileEntity, err = h.getDB().CreateFile(strings.Trim(info.Name(), ".gzip"), req.Mime, info.Size(), dSpace.ID)
 		if err != nil {
 			return errs.NewStack(err)
 		}
