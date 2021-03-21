@@ -83,6 +83,9 @@ func (s *Service) Start(a *gaarx.App) error {
 
 		cms.POST("/users/list", h.ListUsers)
 		cms.OPTIONS("/users/list", echo.MethodNotAllowedHandler)
+
+		cms.DELETE("/user/:id", h.DeleteUser)
+		cms.OPTIONS("/user/:id", echo.MethodNotAllowedHandler)
 	}
 
 	file := e.Group("/file", authMw...)
