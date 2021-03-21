@@ -25,8 +25,7 @@ func (r *Repo) FindFiles(ids []uint) ([]*model.File, error) {
 	defer mux.RUnlock()
 
 	var files []*model.File
-	if err := r.DB.
-		Find(&files, ids).Error; err != nil {
+	if err := r.DB.Model(&model.File{}).Where("id in (?)", ids).Find(&files).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
 	return files, nil
