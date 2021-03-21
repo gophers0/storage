@@ -17,6 +17,4 @@ type UserAccessRight struct {
 	FileId            uint
 	UserId            uint `gorm:"index"` // we do not store user data
 	AccessRightTypeId uint // AccessRight constant
-
-	File File `gorm:"foreignKey:FileId"`
 }
