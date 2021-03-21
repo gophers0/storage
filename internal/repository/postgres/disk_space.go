@@ -96,3 +96,17 @@ func (r *Repo) FillDiskSpace(userId uint, volume int64) (*model.DiskSpace, error
 
 	return diskSpace, nil
 }
+
+func (r *Repo) RemoveDiskSpace(id uint) error {
+	mux.Lock()
+	defer mux.Unlock()
+
+	if err := r.DB.Unscoped().Where("disk_space_id = ?", id).Delete(&model.File{}).Error; err != nil {
+		return errs.NewStack(err)
+	}
+
+	if err := r.DB.Unscoped().Where("id = ?", id).Delete(&model.DiskSpace{}).Error; err != nil {
+		return errs.NewStack(err)
+	}
+	return nil
+}

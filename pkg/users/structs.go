@@ -41,3 +41,7 @@ type (
 		Records []User `json:"records"`
 	}
 )
+
+type DeleteUserResponse struct {
+	Code int `json:"code"`
+}
