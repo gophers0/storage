@@ -10,7 +10,7 @@ import (
 func (mw *Middleware) AdminOnly() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			user, ok := c.Get(transport.CtxUserKey).(*users.User)
+			user, ok := c.Get(transport.CtxUserKey).(users.User)
 			if !ok {
 				return errs.NewStack(errs.InvalidToken)
 			}
