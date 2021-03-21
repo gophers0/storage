@@ -54,18 +54,18 @@ func (h *Handlers) GetFile(c echo.Context) error {
 	if err != nil {
 		return errs.NewStack(err)
 	}
-	defer fi.Close()
-
 	r, err := gzip.NewReader(fi)
 	if err != nil {
 		return errs.NewStack(err)
 	}
-	defer r.Close()
+
+	fi.Close()
 
 	var res []byte
 	if res, err = ioutil.ReadAll(r); err != nil {
 		return errs.NewStack(err)
 	}
+	r.Close()
 
 	return c.Blob(http.StatusOK, file.Mime, res)
 }
