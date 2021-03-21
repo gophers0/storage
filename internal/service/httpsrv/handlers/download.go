@@ -59,8 +59,6 @@ func (h *Handlers) GetFile(c echo.Context) error {
 		return errs.NewStack(err)
 	}
 
-	fi.Close()
-
 	var res []byte
 	if res, err = ioutil.ReadAll(r); err != nil {
 		return errs.NewStack(err)
