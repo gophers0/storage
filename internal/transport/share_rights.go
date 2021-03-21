@@ -2,6 +2,7 @@ package transport
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/gophers0/storage/pkg/errs"
 )
@@ -17,12 +18,11 @@ type (
 )
 
 func (req *ShareReadRightRequest) Validate() error {
-	var err error
 	if req.UserName == "" {
-		err = errs.NewStack(errors.New("username is empty"))
+		return errs.NewStack(errors.New("username is empty"))
 	}
 	if req.FileId <= 0 {
-		err = errs.NewStack(errors.New("invalid file id"))
+		return errs.NewStack(errors.New(fmt.Sprintf("invalid file id: %d", req.FileId)))
 	}
-	return err
+	return nil
 }
