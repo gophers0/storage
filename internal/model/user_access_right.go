@@ -13,8 +13,7 @@ const (
 
 type UserAccessRight struct {
 	Model
-
-	FileId            uint
-	UserId            uint `gorm:"index"` // we do not store user data
-	AccessRightTypeId uint // AccessRight constant
+	FileId            uint `json:"file_id"`
+	UserId            uint `json:"user_id" gorm:"index"` // we do not store user data
+	AccessRightTypeId uint `json:"access_right_type_id"` // AccessRight constant
 }

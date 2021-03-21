@@ -44,12 +44,13 @@ func (r *Repo) CreateUserAccessRight(userId, fileId, accessRightId uint) (*model
 
 	userAccessRight := &model.UserAccessRight{
 		UserId:            userId,
-		FileId:            fileId,
+		FileId:            file.ID,
 		AccessRightTypeId: accessRightId,
 	}
 
 	if err := r.DB.
-		Where("user_id = ? AND file_id = ? AND access_right_type_id = ?", userId, fileId, accessRightId).
+		Model(&model.UserAccessRight{}).
+		Where("user_id = ? AND file_id = ? AND access_right_type_id = ?", userId, file.ID, accessRightId).
 		FirstOrCreate(userAccessRight).Error; err != nil {
 		return nil, errs.NewStack(err)
 	}
